@@ -19,5 +19,19 @@ interface UserRepository extends JpaRepository<User, Long> {
                 .filter(user -> Objects.equals(user.getEmail(), email))
                 .findFirst();
     }
+    /**
+     * Finds users whose email contains the given fragment (case-insensitive).
+     * This method loads all users and filters them in memory using a stream.
+     *
+     * @param fragment email fragment to search for
+     * @return list of users whose email contains the given fragment (case-insensitive)
+     */
+    default java.util.List<User> findByEmailContainingIgnoreCase(String fragment) {
+        return findAll().stream()
+                .filter(user -> user.getEmail() != null)
+                .filter(user -> user.getEmail().toLowerCase()
+                        .contains(fragment.toLowerCase()))
+                .toList();
+    }
 
 }
